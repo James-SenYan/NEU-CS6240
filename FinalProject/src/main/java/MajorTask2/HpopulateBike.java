@@ -5,6 +5,8 @@ import com.opencsv.CSVParser;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -102,6 +104,9 @@ public class HpopulateBike {
         throws IOException {
       // Parse the input line
       String[] line = this.csvParser.parseLine(value.toString());
+      if (Objects.equals(offset.toString(), "0")){
+        return;
+      }
       for(String item : line){
         if(item == null || item.length() == 0) return;
       }
@@ -122,7 +127,7 @@ public class HpopulateBike {
       String birthYear = line[13];
       String gender = line[14];
 
-      LocalDate startDate = LocalDate.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      LocalDate startDate = LocalDate.parse(startTime.split(" ")[0], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
       //rowKey.append(startDate.toString());
       rowKey.append(startTime).append("#").append(bikeId);
       Put put = new Put(Bytes.toBytes(rowKey.toString()));
