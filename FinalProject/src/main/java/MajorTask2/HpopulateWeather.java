@@ -4,6 +4,7 @@ import com.opencsv.CSVParser;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -94,6 +95,9 @@ public class HpopulateWeather {
         throws IOException {
       // Parse the input line
       String[] line = this.csvParser.parseLine(value.toString());
+      if (Objects.equals(offset.toString(), "0")){
+        return;
+      }
       for(String item : line){
         if(item == null || item.length() == 0) return;
       }
@@ -105,7 +109,7 @@ public class HpopulateWeather {
       String minTemperature = line[4];
       String maxTemperature = line[5];
       LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-      rowKey.append(date.toString());
+      rowKey.append(date.toString().trim());
       Put put = new Put(Bytes.toBytes(rowKey.toString()));
       put.addColumn(COLUMN_FAMILY.getBytes(), COLUMN_DATE.getBytes(), dateStr.getBytes());
       put.addColumn(COLUMN_FAMILY.getBytes(), COLUMN_PRCP.getBytes(),
