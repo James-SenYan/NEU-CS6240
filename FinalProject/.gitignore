@@ -23,3 +23,7 @@ build/
 # Miscellaneous
 .DS_Store
 Thumbs.db
+
+# output artifacts
+out/artifacts/HpopulateBike_jar/*.jar
+out/artifacts/HpopulateWeather_jar/*.jar
