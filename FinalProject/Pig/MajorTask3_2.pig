@@ -7,12 +7,6 @@ start_station_latitude:float, start_station_longitude:float,
 end_station_id:int, end_station_name:chararray, end_station_latitude:float,
 end_station_longitude:float, bike_id:int, user_type:int,
 birth_year:datetime, gender:int);
---dump Bike_Original_table;
---
---Filtered_Bike_Info = FILTER Bike_Original_table BY NOT (birth_year IS NULL);
---Bike_With_Age = FOREACH Filtered_Bike_Info GENERATE trip_duration, start_time,
---start_station_id, end_station_id, bike_id, gender,
---(ROUND((ToUnixTime(start_time) - ToUnixTime(birth_year))/(365*24*60*60))) AS rider_age_second;
 Filtered_Bike_Info = FILTER Bike_Original_table BY (NOT (birth_year IS NULL) AND SIZE(start_time) >= 17);
 Bike_With_Age = FOREACH Filtered_Bike_Info GENERATE trip_duration,
 ((INDEXOF(start_time, '/') >= 0) ? ToDate(SUBSTRING(start_time, 0, INDEXOF(start_time, ' ')), 'MM/dd/yyyy') :
