@@ -126,10 +126,20 @@ public class HpopulateBike {
       String userType = line[12];
       String birthYear = line[13];
       String gender = line[14];
-
-      LocalDate startDate = LocalDate.parse(startTime.split(" ")[0], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-      //rowKey.append(startDate.toString());
-      rowKey.append(startTime).append("#").append(bikeId);
+      LocalDate startDate = null;
+      String strDate = startTime.split(" ")[0];
+      if(strDate.contains("-")){
+        startDate = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      }else if(strDate.contains("/")){
+        String[] dateInfo = strDate.split("/");
+        int month = Integer.parseInt(dateInfo[0]);
+        int day = Integer.parseInt(dateInfo[1]);
+        int year = Integer.parseInt(dateInfo[2]);
+        startDate = LocalDate.of(year, month, day);
+      }else{
+        return;
+      }
+      rowKey.append(startDate.toString().trim()).append("#").append(bikeId);
       Put put = new Put(Bytes.toBytes(rowKey.toString()));
       put.addColumn(COLUMN_FAMILY.getBytes(), COLUMN_TRIP_DURATION.getBytes(), tripDuration.getBytes());
       put.addColumn(COLUMN_FAMILY.getBytes(), COLUMN_START_TIME.getBytes(), startDate.toString().getBytes());
