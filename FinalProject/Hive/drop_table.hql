@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS trip_data;
+DROP TABLE IF EXISTS weather_data;
